@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Latent Growth Curve Modeling (LGCM)</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/viz-1.8.2/viz.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="site_libs/grViz-binding-1.0.6.1/grViz.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+<link rel="stylesheet" href="site_libs/sass49ddc95f3eb061602584553eea835b59/custom-lsem.min.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+<!DOCTYPE html>
+<div 
+  <nav class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <!-- NOTE: add "navbar-inverse" class for an alternate navbar background -->
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> The ABCD Study <br> Longitudinal Analyses Project     </a>
+    </nav>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html" icon= fa-home >Home</a></li>
+        <li><a href="about.html" icon= fa-info >About</a></li>
+        <li><a href="tutorial-main.html">Tutorial</a></li>
+        <li><a href="resources.html" icon= fa-gear >Resources</a></li>
+        <li><a href="Tools.html">Tools</a></li>
+        <li><a href="/Users/shawes/Desktop/Biostatistics/paper/manuscript-main.pdf">Manuscript</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <a href="https://abcdstudy.org/" target="_blank">
+        <img id="logo" class="d-inline-block mr-1" alt="Logo" src="/Users/shawes/Desktop/Biostatistics/img/abcdimage.png"
+          width="200" 
+          height="100" /></a>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+<!DOCTYPE html>
+
+      
+<div class="lsemPage">
+  <div class="lsemNav">
+    <a id="nav-lsem-1" href="lsem-1.html">LSEM Introduction</a>
+    <a id="nav-lsem-2" href="lsem-2.html">Autoregressive and Cross-lagged Panel Analysis</a>
+    <a id="nav-lsem-3" href="lsem-3.html">Latent Change Score Analysis (LCS)</a>
+    <a id="nav-lsem-4" href="lsem-4.html">Latent Growth Curve Modeling (LGCM)</a>
+    <a id="nav-lsem-5" href="lsem-5.html">Latent Transition Analysis (LTA)</a>
+    <a id="nav-lsem-6" href="lsem-6.html">Growth Mixture Models (GMM)</a>
+    <a id="nav-lsem-7" href="lsem-7.html">State-Trait Models</a>
+    <a id="nav-lsem-8" href="lsem-8.html">Latent Curve Models with Structural Residuals (LCM-SR)</a>
+    <a id="nav-lsem-9" href="lsem-9.html">Random Intercept Cross-lagged Panel Model(RI-CLPM)</a>
+    <a id="nav-lsem-10" href="lsem-10.html">Time to Event Analyses</a>
+  </div>
+  <div class="lsemContent">
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Latent Growth Curve Modeling (LGCM)</h1>
+
+</div>
+
+
+<!-- 
+split_by: section
+split_by: chapter
+bookdown::gitbook
+-->
+<p><br /></p>
+<p>The latent growth model (LGM) extends CFA to the analysis of items across time. The LGCM approach provides a flexible strategy for specifying and evaluating relationships among variables that have been assessed repeatedly across multiple measurement occasions <span class="citation">[@Preacher2008]</span>. These models are often the go-to choice for developmental research as they allow for characterizing the rate (e.g., increasing, decreasing) and shape (e.g., linear, quadratic) of change in outcomes at both, the group- and individual-level. The LGCM framework can also be extended to evaluate other substantive questions relevant to continuity and change. This vignette will explore a basic (“unconditional”) LGCM, as well as three commonly applied extensions to this approach, as follow:</p>
+<ul>
+<li><a href="lgcm-ex-1.html">5.1: LGCM w/ Continuous Indicators</a></li>
+<li><a href="lgcm-ex-1.html">5.2: LGCM w/ Continuous Indicators with Time-Varying Covariates</a></li>
+<li><a href="lgcm-ex-1.html">5.3: LGCM w/ Continuous Indicators Predicting Distal Outcomes</a></li>
+<li><a href="lgcm-ex-1.html">5.4: LGCM w/ Continuous Indicators and Antecedent Predictors</a></li>
+<li><a href="lgcm-ex-1.html">5.5: xxxxxxxxx other examples See statmodel Chpt. 6 sections</a> <br /> <br /></li>
+</ul>
+<div id="basic-lgcm" class="section level2 tabset tabset-fade" style="color: black;">
+<h2 class="tabset tabset-fade" style="color: black;">5.1: Basic LGCM</h2>
+<p>This is an example of a basic LGCM w/ continuous outcome [y], across four measurement occassions</p>
+<p><br /></p>
+<div id="text-overview" class="section level3">
+<h3><span style="color:red">Text Overview</span></h3>
+<p>LGCM is a special class of confirmatory factor analysis used to model some outcome (Y) measured repeatedly over time (t). The most basic LGCM includes two latent factors and uses a fixed time structure to model the observed outcome (Y) across assessment waves (t): 1) a latent intercept; and 2) a latent slope. The intercept factor is constant for each individual across observations, and is akin to the point at which a straight line “intercepts” the vertical axis on a two-dimensional coordinate system (<span class="citation">@citation</span>). This is modeled by fixing the factor loadings for the latent intercept to 1 at each measurement occassion.</p>
+</div>
+<div id="diagram" class="section level3">
+<h3><span style="color:red">Diagram</span></h3>
+<div id="htmlwidget-7628547a0730dbea55ca" style="width:100%;height:25%;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7628547a0730dbea55ca">{"x":{"diagram":"digraph growth {\n           # specifying label position is impossible as long as Diagrammer ignores several label attributes inherent in graphviz\n           # Intialization of graph attributes\n           graph [overlap=false ordering=out outputorder = edgesfirst splines=false bgcolor=transparent]    # order out keeps observed nodes in order; splines will keep straight after specifying headport\n\n           # Node statements\n           node [shape=circle style=filled fillcolor=gray75 color=gray75 fontcolor=gray50 fontsize=\"14px\"];\n\n           subgraph{\n            rankdir = LR;\n             rank = same;\n\n             # using plotly palette with alpha\n             Intercept [label=\"Intercept\", fontname=Roboto, fontcolor=white, fixedsize=true, width=1, height=1, fillcolor=\"pink\" color=\"black\"];\n             Slope [fontname=Roboto, fontcolor=white, fixedsize=true, width=1, height=1, fillcolor=\"turquoise\" color=\"black\"];\n           }\n\n           node [width=.66, height=.66, fixedsize=true, shape=square, style=\"\"]\n           subgraph {\n             rankdir = TB;\n             rank=same;\n             node [fontcolor=black]\n             node [color=\"black\"]\n\n             V1 [label = <Y<FONT POINT-SIZE=\"8\"><SUB>T1<\/SUB><\/FONT>>];\n             V2 [label = <Y<FONT POINT-SIZE=\"8\"><SUB>T2<\/SUB><\/FONT>>];\n             V3 [label = <Y<FONT POINT-SIZE=\"8\"><SUB>T3<\/SUB><\/FONT>>];\n             V4 [label = <Y<FONT POINT-SIZE=\"8\"><SUB>T4<\/SUB><\/FONT>>];\n           }\n\n           # Initialization of edge attributes\n           edge [color = gray50 overlap=false arrowsize=.5]\n\n           # Edge statements\n\n           edge [ fontcolor=gray25 dir=both fontsize=\"8px\"]  # labeleangle, labeldistance etc. attributes ignored\n           #Intercept -> Slope[label=<&psi; <sub>&alpha;&beta;<\/sub>>];\n\n           edge [dir=forward headport=\"c\" minlen=1]\n           edge [label=\"1\"  color=\"pink\" fontcolor=\"pink\"]\n           Intercept -> V1;\n           edge [label=\"1\"   color=\"pink\" fontcolor=\"pink\"]\n           Intercept -> V2;\n           edge [label=\"1\"  color=\"pink\" fontcolor=\"pink\"]\n           Intercept -> V3;\n           edge [label=\"1\"  color=\"pink\" fontcolor=\"pink\"]\n           Intercept -> V4;\n\n           edge [dir=forward headport=\"n\" minlen=1]\n           edge [label=\"0\"  color=\"turquoise\" fontcolor=\"turquoise\" labelposition=3]\n           Slope -> V1;\n           edge [label=\"1\"  color=\"turquoise\" fontcolor=\"turquoise\"]\n           Slope -> V2;\n           edge [label=\"2\"  color=\"turquoise\" fontcolor=\"turquoise\"]\n           Slope -> V3;\n           edge [label=\"3\"  color=\"turquoise\" fontcolor=\"turquoise\"]\n           Slope -> V4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="code-explanation" class="section level3">
+<h3><span style="color:blue">Code Explanation</span></h3>
+<pre class="r fold-show"><code># Example-5.1
+model &lt;- &#39; i =~ 1*y1 + 1*y2 + 1*y3 + 1*y4
+           s =~ 0*y1 + 1*y2 + 2*y3 + 3*y4 &#39;
+fit &lt;- growth(model, data=path-to-data)
+summary(fit)</code></pre>
+<p>A basic linear growth model includes two factors: 1) a latent intercept; and 2) a latent slope. This model estimates the following six parameters:</p>
+<ol style="list-style-type: decimal">
+<li>intercept mean (<span class="math inline">\(\[ \mu\]\)</span>i);</li>
+<li>intercept variance (<span class="math inline">\(\[ \sigma\]\)</span>i);</li>
+<li>slope mean (<span class="math inline">\(\[ \mu\]\)</span>s);</li>
+<li>slope variance (<span class="math inline">\(\[ \sigma\]\)</span>s);</li>
+<li>intercept and slope covariance (<span class="math inline">\(\[ \sigma\]\)</span>is); and</li>
+<li>an error variance that remains constant across repeated measurements (<span class="math inline">\(\[ \sigma\]\)</span>ε) <br /> <br /></li>
+</ol>
+<p>This model is specified by using the ‘<em>=~</em>’ operator to name and define the growth model factors. The left-hand side of the ‘=~’ operator is used to specify the latent intercept <em>i</em> and latent slope <em>s</em> factors. The right-hand side of the ‘=~’ operator specifies the growth model outcome and time scores. In the LGCM framework, the functional form of growth (e.g., linear) is defined by fixing the factor loadings of the growth model factors. The intercept factor remains constant for each individual across time; as such, factor loadings for the intercept <em>i</em> are fixed to the value of 1 at each measurement occassion. To define linear growth across the 4 equidistant time points, time scores for the slope <em>s</em> growth factor are fixed at 0, 1, 2, and 3. Setting the time score at the first measurement occassion to zero anchors the latent intercept as “baseline” or “initial status”. Means and variances of the growth factors are estimated as the default, as is the growth factor covariance.</p>
+<pre class="r fold-show"><code>model &lt;- &#39; i =~ 1*y1 + 1*y2 + 1*y3 + 1*y4
+           s =~ 0*y1 + 1*y2 + 2*y3 + 3*y4 &#39;</code></pre>
+<p>The <em>growth()</em> function can be called to fit the <em>model</em> that we defined in the prior step.</p>
+<pre class="r fold-show"><code>fit &lt;- growth(model, data=path-to-data)</code></pre>
+<p>The <em>summary()</em> function can be called to provide an overview and show results of the fitted model.</p>
+<pre class="r fold-show"><code>summary(fit)</code></pre>
+<!--
+
+The growth() function, is a wrapper function for the lavaan() function that automatically specifies fixed and free parameters for the latent growth model. Use of this function eliminates several additional coding steps such as having to constrain a subset of observed intercepts to zero and specifying that latent means are to be freely estimated. See [Example 5 full code] for additional details. 
+
+fitMeasures
+
+The *fitmeasures()* function can be called to provide a variety of model fit indices.
+
+-->
+</div>
+<div id="abcd-example" class="section level3">
+<h3><span style="color:green">ABCD Example</span></h3>
+<p>“The goal of our current LGM is to assess the linear trajectory of GPA, with the question being, does the average student GPA in a particular school go up or down over time?”</p>
+<pre class="r"><code># LGCM for a continuous outcome [y], across four mesurement occassions
+model &lt;- &#39; i =~ 1*Brain_T1 + 1*Brain_T2 + 1*Brain_T3 + 1*Brain_T4
+           s =~ 0*Brain_T1 + 1*Brain_T2 + 2*Brain_T3 + 3*Brain_T4 &#39;
+fit &lt;- growth(model, data=mydata, meanstructure=TRUE, estimator = &quot;MLR&quot;, missing = &quot;ML&quot;)</code></pre>
+<pre><code>## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan WARNING: some cases are empty and will be ignored:
+##   44 429 636 682 1077 1174</code></pre>
+<pre><code>## Warning in lav_object_post_check(object): lavaan WARNING: some estimated lv
+## variances are negative</code></pre>
+<pre class="r"><code>summary(fit, standardized = TRUE, fit.measures = TRUE)</code></pre>
+<pre><code>## lavaan 0.6-9 ended normally after 23 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                         9
+##                                                       
+##                                                   Used       Total
+##   Number of observations                          1326        1332
+##   Number of missing patterns                        11            
+##                                                                   
+## Model Test User Model:
+##                                                Standard      Robust
+##   Test Statistic                                392.563     312.386
+##   Degrees of freedom                                  5           5
+##   P-value (Chi-square)                            0.000       0.000
+##   Scaling correction factor                                   1.257
+##        Yuan-Bentler correction (Mplus variant)                     
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              2563.464    1465.370
+##   Degrees of freedom                                 6           6
+##   P-value                                        0.000       0.000
+##   Scaling correction factor                                  1.749
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.848       0.789
+##   Tucker-Lewis Index (TLI)                       0.818       0.747
+##                                                                   
+##   Robust Comparative Fit Index (CFI)                         0.849
+##   Robust Tucker-Lewis Index (TLI)                            0.818
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -5217.684   -5217.684
+##   Scaling correction factor                                  1.578
+##       for the MLR correction                                      
+##   Loglikelihood unrestricted model (H1)      -5021.403   -5021.403
+##   Scaling correction factor                                  1.463
+##       for the MLR correction                                      
+##                                                                   
+##   Akaike (AIC)                               10453.368   10453.368
+##   Bayesian (BIC)                             10500.077   10500.077
+##   Sample-size adjusted Bayesian (BIC)        10471.488   10471.488
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.242       0.215
+##   90 Percent confidence interval - lower         0.222       0.198
+##   90 Percent confidence interval - upper         0.262       0.234
+##   P-value RMSEA &lt;= 0.05                          0.000       0.000
+##                                                                   
+##   Robust RMSEA                                               0.241
+##   90 Percent confidence interval - lower                     0.219
+##   90 Percent confidence interval - upper                     0.264
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.238       0.238
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Sandwich
+##   Information bread                           Observed
+##   Observed information based on                Hessian
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   i =~                                                                  
+##     Brain_T1          1.000                               0.599    0.742
+##     Brain_T2          1.000                               0.599    0.627
+##     Brain_T3          1.000                               0.599    0.778
+##     Brain_T4          1.000                               0.599    0.740
+##   s =~                                                                  
+##     Brain_T1          0.000                                  NA       NA
+##     Brain_T2          1.000                                  NA       NA
+##     Brain_T3          2.000                                  NA       NA
+##     Brain_T4          3.000                                  NA       NA
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   i ~~                                                                  
+##     s                 0.031    0.009    3.351    0.001    0.434    0.434
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .Brain_T1          0.000                               0.000    0.000
+##    .Brain_T2          0.000                               0.000    0.000
+##    .Brain_T3          0.000                               0.000    0.000
+##    .Brain_T4          0.000                               0.000    0.000
+##     i                 0.004    0.021    0.184    0.854    0.006    0.006
+##     s                 0.008    0.006    1.528    0.126       NA       NA
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .Brain_T1          0.292    0.025   11.874    0.000    0.292    0.449
+##    .Brain_T2          0.506    0.034   15.083    0.000    0.506    0.554
+##    .Brain_T3          0.167    0.016   10.284    0.000    0.167    0.281
+##    .Brain_T4          0.239    0.018   13.242    0.000    0.239    0.365
+##     i                 0.359    0.034   10.494    0.000    1.000    1.000
+##     s                -0.015    0.003   -4.441    0.000       NA       NA</code></pre>
+<pre class="r"><code># extract information
+mean_lv &lt;- lavInspect(fit, &quot;mean.lv&quot;, add.labels = TRUE, add.class = TRUE,
+           list.by.group = TRUE,
+           drop.list.single.group = TRUE)
+
+cov_lv &lt;- lavInspect(fit, &quot;cov.lv&quot;, add.labels = TRUE, add.class = TRUE,
+           list.by.group = TRUE,
+           drop.list.single.group = TRUE)
+
+
+intercept_var &lt;- cov_lv[1]
+slope_var &lt;- cov_lv[4]
+is_covary &lt;- cov_lv[2]
+
+intercept_var</code></pre>
+<pre><code>## [1] 0.3587796</code></pre>
+<pre class="r"><code>slope_var</code></pre>
+<pre><code>## [1] -0.01450445</code></pre>
+<pre class="r"><code>is_covary</code></pre>
+<pre><code>## [1] 0.03128647</code></pre>
+<pre class="r"><code>intercept_mean &lt;- mean_lv[1]
+slope_mean &lt;- mean_lv[2]
+
+#lavInspect(fit, &quot;sampstat&quot;)
+#lavNames(fit, &quot;ov&quot; &quot;lv&quot;)
+#lavInspect(fit, &quot;mean.lv&quot;) #Alias: &quot;eeta&quot; [for E(eta)].
+#lavInspect(fit, &quot;cor.lv&quot;)
+#parTable(fit)
+#varTable(fit)
+#inspect(fit, what=&quot;cor.all&quot;)
+#lavCor(fit)
+#out &lt;- lavExport(fit, target = &quot;Mplus&quot;, export=FALSE)
+#cat(out)</code></pre>
+<pre><code>
+Model Test User Model:
+##                                                Standard      Robust
+##   Test Statistic                                392.563     312.386
+##   Degrees of freedom                                  5           5
+##   P-value (Chi-square)                            0.000       0.000
+</code></pre>
+<pre><code>User Model versus Baseline Model:
+
+Comparative Fit Index (CFI)                    0.848       0.789
+Tucker-Lewis Index (TLI)                       0.818       0.747
+</code></pre>
+<pre><code>Root Mean Square Error of Approximation:
+ 
+   RMSEA                                          0.242       0.215
+</code></pre>
+<pre><code>Standardized Root Mean Square Residual:
+ 
+   SRMR                                           0.238       0.238</code></pre>
+<!-- link to model diagnostics to evaluate in instances when fit is poor -->
+<p>The average baseline score (i.e., the mean intercept value) on the xxxxx measure is 0.003857 and the mean slope value is 0.008419. This means that the predicted xxxx score at the first measurement occasion (i.e., t=0) is 0.003857 and at each subsequent measurement occasion the xxxx score is expected to go up by 0.008419 points. There is significant variability in individual’s xxxxx scores at baseline 0.3587796, p &lt; .xxx), as well as in their slope value -0.0145045, p &lt; .001), suggesting that the rate of change in xxxx was not the same for all children. Finally, the estimated negative covariance or 0.0312865, p &lt; .001) implies that the higher the starting score on xxxx, the weaker the increase in xxxxxx.</p>
+<div id="plots" class="section level4">
+<h4>Plots</h4>
+<pre class="r"><code>p &lt;- ggplot(data = new2, aes(x = name, y = value, group = id_s))
+
+p + geom_line() + stat_smooth(aes(group = 1), method = &quot;lm&quot;, se = FALSE) + stat_summary(aes(group = 1), geom = &quot;point&quot;, fun = mean, shape = 17, size = 3)+theme_bw()</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="lsem-3_files/figure-html/growth%20model%20plots-1.png" width="672" /></p>
+<pre class="r"><code>#+ facet_grid(. ~ sex)
+#+ facet_wrap(~id_s)
+
+ggplot(new2, aes(x=name, y=value, group=1))+geom_jitter(height = 0, width = 0.2, alpha = 0.2)+geom_point(alpha=0.5)+stat_summary(fun=mean, colour=&quot;red&quot;, geom=&quot;line&quot;, size = 3)+theme_bw() # draw a mean line in the data</code></pre>
+<p><img src="lsem-3_files/figure-html/growth%20model%20plots-2.png" width="672" /></p>
+<pre class="r"><code>#shape = male, 
+#linetype = male
+#geom_line(aes(linetype = male), size = 1)
+
+## load the grid package for the unit function to adjust the legend width
+#require(grid)
+
+#theme(legend.key.width = unit(1, &quot;cm&quot;)) + theme_bw() + scale_linetype(name = &quot;Sex&quot;</code></pre>
+</div>
+<div id="tables" class="section level4">
+<h4>Tables</h4>
+<pre class="r"><code>head(mydata)</code></pre>
+<div class="kable-table">
+<table style="width:100%;">
+<colgroup>
+<col width="1%" />
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="0%" />
+<col width="1%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="1%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">id_s</th>
+<th align="right">site_id</th>
+<th align="right">fam_id</th>
+<th align="right">sex</th>
+<th align="right">age2</th>
+<th align="right">eduPar</th>
+<th align="right">IQ</th>
+<th align="right">White</th>
+<th align="right">AfrAmer</th>
+<th align="right">Hisp</th>
+<th align="right">Other</th>
+<th align="right">G_DBD</th>
+<th align="right">G_CDCU</th>
+<th align="right">G_CD</th>
+<th align="right">Brain_T1</th>
+<th align="right">Brain_T2</th>
+<th align="right">Brain_T3</th>
+<th align="right">Brain_T4</th>
+<th align="right">Al_OFC</th>
+<th align="right">Al_VS</th>
+<th align="right">Ar_insl</th>
+<th align="right">Ar_amyg</th>
+<th align="right">Ar_ACC</th>
+<th align="right">Ar_DS</th>
+<th align="right">Ar_OFC</th>
+<th align="right">Ar_VS</th>
+<th align="right">Ol_insl</th>
+<th align="right">Ol_amyg</th>
+<th align="right">Ol_ACC</th>
+<th align="right">Ol_DS</th>
+<th align="right">Ol_OFC</th>
+<th align="right">Ol_VS</th>
+<th align="right">Or_insl</th>
+<th align="right">Or_amyg</th>
+<th align="right">Or_ACC</th>
+<th align="right">Or_DS</th>
+<th align="right">Or_OFC</th>
+<th align="right">Or_VS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1003</td>
+<td align="right">NA</td>
+<td align="right">4720</td>
+<td align="right">1</td>
+<td align="right">10</td>
+<td align="right">19</td>
+<td align="right">53</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">-1.1618288</td>
+<td align="right">-0.4292490</td>
+<td align="right">-0.9653438</td>
+<td align="right">-0.7580128</td>
+<td align="right">-0.5226592</td>
+<td align="right">0.2943112</td>
+<td align="right">-1.2085675</td>
+<td align="right">-0.0936396</td>
+<td align="right">-1.0803930</td>
+<td align="right">-0.8981783</td>
+<td align="right">-0.4827932</td>
+<td align="right">0.0567793</td>
+<td align="right">-0.5268507</td>
+<td align="right">0.1066066</td>
+<td align="right">-0.1992209</td>
+<td align="right">-0.6951542</td>
+<td align="right">-0.2298497</td>
+<td align="right">-0.4848354</td>
+<td align="right">-0.5421841</td>
+<td align="right">0.0749324</td>
+<td align="right">-0.2538217</td>
+<td align="right">-0.6901555</td>
+<td align="right">-0.7401566</td>
+<td align="right">-0.3033793</td>
+</tr>
+<tr class="even">
+<td align="right">1009</td>
+<td align="right">11</td>
+<td align="right">8321</td>
+<td align="right">1</td>
+<td align="right">10</td>
+<td align="right">11</td>
+<td align="right">36</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">0.8242727</td>
+<td align="right">1.0269574</td>
+<td align="right">0.7299425</td>
+<td align="right">0.7370511</td>
+<td align="right">-0.8101749</td>
+<td align="right">0.8593222</td>
+<td align="right">0.5094387</td>
+<td align="right">-0.3322929</td>
+<td align="right">1.4797608</td>
+<td align="right">0.7085889</td>
+<td align="right">NA</td>
+<td align="right">0.5200343</td>
+<td align="right">-1.3654890</td>
+<td align="right">NA</td>
+<td align="right">-1.6232574</td>
+<td align="right">-1.4339658</td>
+<td align="right">0.7436936</td>
+<td align="right">-0.9519940</td>
+<td align="right">-1.9847714</td>
+<td align="right">0.4383831</td>
+<td align="right">-0.6677789</td>
+<td align="right">-0.4227771</td>
+<td align="right">1.4945344</td>
+<td align="right">0.1198005</td>
+</tr>
+<tr class="odd">
+<td align="right">1032</td>
+<td align="right">12</td>
+<td align="right">1860</td>
+<td align="right">1</td>
+<td align="right">9</td>
+<td align="right">14</td>
+<td align="right">45</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">-0.8664505</td>
+<td align="right">-0.1862437</td>
+<td align="right">-0.6598830</td>
+<td align="right">-0.7595867</td>
+<td align="right">-0.1458286</td>
+<td align="right">-0.5713180</td>
+<td align="right">-1.1015607</td>
+<td align="right">-1.5446420</td>
+<td align="right">-0.6260608</td>
+<td align="right">-0.5040337</td>
+<td align="right">-0.3884108</td>
+<td align="right">-0.1450016</td>
+<td align="right">-0.0417275</td>
+<td align="right">-0.2086975</td>
+<td align="right">-1.1731561</td>
+<td align="right">-0.6477299</td>
+<td align="right">-0.1088431</td>
+<td align="right">-0.9090714</td>
+<td align="right">-0.7435897</td>
+<td align="right">0.1020318</td>
+<td align="right">-0.9298283</td>
+<td align="right">-0.9420904</td>
+<td align="right">-0.3547380</td>
+<td align="right">-0.9345652</td>
+</tr>
+<tr class="even">
+<td align="right">1050</td>
+<td align="right">6</td>
+<td align="right">8784</td>
+<td align="right">1</td>
+<td align="right">9</td>
+<td align="right">18</td>
+<td align="right">NA</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">-0.3870894</td>
+<td align="right">0.3176650</td>
+<td align="right">-0.1598046</td>
+<td align="right">-0.1791781</td>
+<td align="right">0.0585059</td>
+<td align="right">0.1517195</td>
+<td align="right">-0.1192761</td>
+<td align="right">0.1890533</td>
+<td align="right">-1.1964740</td>
+<td align="right">-0.2069773</td>
+<td align="right">-0.0624803</td>
+<td align="right">-0.1603398</td>
+<td align="right">0.6300036</td>
+<td align="right">-0.2185929</td>
+<td align="right">0.0391713</td>
+<td align="right">0.1645420</td>
+<td align="right">0.0549309</td>
+<td align="right">-0.0064798</td>
+<td align="right">0.5796473</td>
+<td align="right">-0.1226141</td>
+<td align="right">-0.0338092</td>
+<td align="right">0.2213476</td>
+<td align="right">0.0600275</td>
+<td align="right">-0.2563011</td>
+</tr>
+<tr class="odd">
+<td align="right">1053</td>
+<td align="right">11</td>
+<td align="right">8323</td>
+<td align="right">1</td>
+<td align="right">9</td>
+<td align="right">13</td>
+<td align="right">48</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1.3049806</td>
+<td align="right">0.6773087</td>
+<td align="right">1.7459680</td>
+<td align="right">1.4777509</td>
+<td align="right">1.1612620</td>
+<td align="right">1.1245678</td>
+<td align="right">1.7984760</td>
+<td align="right">0.8292514</td>
+<td align="right">1.9612113</td>
+<td align="right">1.6729193</td>
+<td align="right">1.3365405</td>
+<td align="right">1.1302388</td>
+<td align="right">-0.6567682</td>
+<td align="right">-0.6239935</td>
+<td align="right">-0.6394403</td>
+<td align="right">-0.1616512</td>
+<td align="right">0.0405499</td>
+<td align="right">0.0222349</td>
+<td align="right">-0.2761151</td>
+<td align="right">-0.0919634</td>
+<td align="right">-0.2788345</td>
+<td align="right">-0.0226372</td>
+<td align="right">-0.2417478</td>
+<td align="right">0.0573272</td>
+</tr>
+<tr class="even">
+<td align="right">1056</td>
+<td align="right">11</td>
+<td align="right">8324</td>
+<td align="right">0</td>
+<td align="right">9</td>
+<td align="right">15</td>
+<td align="right">35</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1.0521568</td>
+<td align="right">0.1276740</td>
+<td align="right">0.7476241</td>
+<td align="right">1.2016660</td>
+<td align="right">0.7477571</td>
+<td align="right">0.4803592</td>
+<td align="right">0.5683246</td>
+<td align="right">0.0926461</td>
+<td align="right">0.8566416</td>
+<td align="right">0.9585451</td>
+<td align="right">0.5567904</td>
+<td align="right">0.7003559</td>
+<td align="right">-0.4642667</td>
+<td align="right">0.3614471</td>
+<td align="right">-0.2070003</td>
+<td align="right">0.3136007</td>
+<td align="right">0.1249480</td>
+<td align="right">0.5009537</td>
+<td align="right">-0.1930765</td>
+<td align="right">0.1094262</td>
+<td align="right">-0.0284609</td>
+<td align="right">-0.0063809</td>
+<td align="right">0.1588265</td>
+<td align="right">0.2750294</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Start with the ‘intercepts’:</p>
+<pre><code>Intercepts:
+                   Estimate  Std.Err  Z-value  P(&gt;|z|)
+                       
+    i                 0.487    0.048   10.072    0.000
+    s                 0.267    0.045    5.884    0.000</code></pre>
+<pre><code>Covariances:
+                   Estimate  Std.Err  Z-value  P(&gt;|z|)
+  i ~~                                                
+    s                 0.226    0.050    4.512    0.000
+Variances:
+                   Estimate  Std.Err  Z-value  P(&gt;|z|)
+    outcome0          0.287    0.041    6.924    0.000
+    outcome1          0.219    0.021   10.501    0.000
+    outcome2          0.185    0.027    6.748    0.000
+    outcome3          0.357    0.065    5.485    0.000
+    i                 0.977    0.076   12.882    0.000
+    s                 0.969    0.065   14.841    0.000</code></pre>
+</div>
+</div>
+</div>
+<div id="section" class="section level2 unnumbered">
+<h2 class="unnumbered"></h2>
+<p><br /> <br /></p>
+</div>
+<div id="lgcm-w-time-varying-covariates" class="section level2 tabset tabset-fade" style="color: black;">
+<h2 class="tabset tabset-fade" style="color: black;">5.2: LGCM w/ Time-Varying Covariates</h2>
+<p><br /> test</p>
+<div id="brief-overview" class="section level3">
+<h3><span style="color:orange">Brief Overview</span></h3>
+<p>test</p>
+</div>
+<div id="diagram-1" class="section level3">
+<h3><span style="color:red">Diagram</span></h3>
+<div id="htmlwidget-fd58992ad526f7c6502f" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-fd58992ad526f7c6502f">{"x":{"diagram":"\ndigraph narc {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 12]\n\n  # nodes for observed and latent\n  node [shape = circle, fontname = Helvetica]\n  \"Intercept\"; \"Slope\";\n  \n  node [shape = box, fontname = Helvetica]\n  t1; t2; t3; t4;\n\n  # edges\n  \"Intercept\"->\"t1\" \"Intercept\"->\"t2\" \"Intercept\"->\"t3\" \"Intercept\"->\"t4\"\n  \"Slope\"->\"t1\" \"Slope\"->\"t2\" \"Slope\"->\"t3\" \"Slope\"->\"t4\"\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="code" class="section level3">
+<h3><span style="color:blue">Code</span></h3>
+<pre class="r"><code># a linear growth model with a time-varying covariate
+model &lt;- &#39;
+  # intercept and slope with fixed coefficients
+    i =~ 1*Brain_T1 + 1*Brain_T2 + 1*Brain_T3 + 1*Brain_T4
+    s =~ 0*Brain_T1 + 1*Brain_T2 + 2*Brain_T3 + 3*Brain_T4
+  # regressions
+    i ~ sex + eduPar
+    s ~ sex + eduPar
+  # time-varying covariates
+    Brain_T1 ~ G_CD
+    Brain_T2 ~ IQ
+    Brain_T3 ~ age2
+    Brain_T4 ~ White
+&#39;
+fit &lt;- growth(model, data = mydata)</code></pre>
+<pre><code>## Warning in lav_object_post_check(object): lavaan WARNING: some estimated lv
+## variances are negative</code></pre>
+<pre class="r"><code>summary(fit)</code></pre>
+<pre><code>## lavaan 0.6-9 ended normally after 53 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        17
+##                                                       
+##                                                   Used       Total
+##   Number of observations                          1175        1332
+##                                                                   
+## Model Test User Model:
+##                                                       
+##   Test statistic                               371.515
+##   Degrees of freedom                                21
+##   P-value (Chi-square)                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i =~                                                
+##     Brain_T1          1.000                           
+##     Brain_T2          1.000                           
+##     Brain_T3          1.000                           
+##     Brain_T4          1.000                           
+##   s =~                                                
+##     Brain_T1          0.000                           
+##     Brain_T2          1.000                           
+##     Brain_T3          2.000                           
+##     Brain_T4          3.000                           
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   i ~                                                 
+##     sex              -0.056    0.043   -1.320    0.187
+##     eduPar           -0.001    0.008   -0.155    0.877
+##   s ~                                                 
+##     sex               0.010    0.011    0.914    0.361
+##     eduPar           -0.000    0.002   -0.099    0.921
+##   Brain_T1 ~                                          
+##     G_CD              0.013    0.018    0.691    0.489
+##   Brain_T2 ~                                          
+##     IQ               -0.000    0.000   -0.568    0.570
+##   Brain_T3 ~                                          
+##     age2              0.004    0.002    1.713    0.087
+##   Brain_T4 ~                                          
+##     White             0.065    0.031    2.114    0.034
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .i ~~                                                
+##    .s                 0.024    0.007    3.558    0.000
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .Brain_T1          0.000                           
+##    .Brain_T2          0.000                           
+##    .Brain_T3          0.000                           
+##    .Brain_T4          0.000                           
+##    .i                 0.061    0.142    0.428    0.668
+##    .s                -0.005    0.038   -0.133    0.894
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .Brain_T1          0.264    0.019   13.835    0.000
+##    .Brain_T2          0.458    0.021   21.660    0.000
+##    .Brain_T3          0.164    0.010   16.187    0.000
+##    .Brain_T4          0.226    0.015   15.366    0.000
+##    .i                 0.326    0.025   13.255    0.000
+##    .s                -0.012    0.003   -4.006    0.000</code></pre>
+</div>
+<div id="code-commentary" class="section level3">
+<h3><span style="color:green">Code Commentary</span></h3>
+<p>test test test</p>
+</div>
+</div>
+<div id="section-1" class="section level2 unnumbered">
+<h2 class="unnumbered"></h2>
+<p><br /> <br /></p>
+<hr />
+</div>
+<div id="lgcm-antecedent-predictors" class="section level2 tabset tabset-fade" style="color: black;">
+<h2 class="tabset tabset-fade" style="color: black;">5.3: LGCM Antecedent Predictors</h2>
+<p><br /> test test test</p>
+<div id="brief-overview-1" class="section level3">
+<h3><span style="color:orange">Brief Overview</span></h3>
+</div>
+<div id="diagram-2" class="section level3">
+<h3><span style="color:red">Diagram</span></h3>
+</div>
+<div id="code-1" class="section level3">
+<h3><span style="color:blue">Code</span></h3>
+</div>
+<div id="code-commentary-1" class="section level3">
+<h3><span style="color:green">Code Commentary</span></h3>
+</div>
+</div>
+<div id="section-2" class="section level2 unnumbered">
+<h2 class="unnumbered"></h2>
+<p><br /> <br /></p>
+<hr />
+</div>
+<div id="lgcm-predicting-a-distal-outcome" class="section level2 tabset tabset-fade" style="color: black;">
+<h2 class="tabset tabset-fade" style="color: black;">5.4: LGCM Predicting a Distal Outcome</h2>
+<p><br /> test test test</p>
+<p>The prior section introduced the fundamental latent growth model with an intercept and linear growth factor. This model sufficiently addresses the question of whether the linear trajectory is increasing, decreasing or flat over time. In our example, we found that GPA increases by on average for every one semester increase in time. Other researchers may be interested in finding casual (using the word loosely) predictors of this linear trajectory. For example, we found that the trajectory of GPA increases over time, but does gender predict this trend? More specifically, are there gender differences in either the starting GPA (intercept factor) or the growth trajectory (slope factor)? To find out, we would need to include an observed predictor of the latent mean and slope terms.</p>
+<div id="brief-overview-2" class="section level3">
+<h3><span style="color:orange">Brief Overview</span></h3>
+</div>
+<div id="diagram-3" class="section level3">
+<h3><span style="color:red">Diagram</span></h3>
+</div>
+<div id="code-2" class="section level3">
+<h3><span style="color:blue">Code</span></h3>
+</div>
+<div id="code-commentary-2" class="section level3">
+<h3><span style="color:green">Code Commentary</span></h3>
+<hr />
+<hr />
+</div>
+</div>
+<div id="continue-to-latent-transition-analysis-lta" class="section level2">
+<h2><a href="lsem-4.html" class="continue-link">Continue to Latent Transition Analysis (LTA)</a></h2>
+</div>
+
+<!DOCTYPE html>
+</div> <!-- lsemContent -->
+</div> <!-- lsemPage -->
+
+<script type="text/javascript">
+  var lsem = window.location.href.match(/lsem-[0-9]+/g);
+  if (lsem !== null) {
+    lsem = 'nav-' + lsem[0];
+    $('#'+lsem).addClass('current');
+  }
+
+  $('#show-answer').on("click", function() {
+    $('#show-answer').addClass('showing');
+    $('#model-answer').addClass('showing');
+  })
+</script>
+<!DOCTYPE html>
+&nbsp;
+<hr />
+<p style="text-align: center;">A work by <a href="https://media.giphy.com/media/100PgquHm9j3sQ/giphy.gif">The ABCD Study Biostatistics Working Group</a></p>
+<p style="text-align: center;"><span style="color: #808080;"><em>abcd-bwg@xxx.edu</em></span></p>
+
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Add font awesome icons -->
+<p style="text-align: center;">
+    <a href="https://twitter.com/" class="fa fa-twitter"></a>
+</p>
+
+&nbsp;
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

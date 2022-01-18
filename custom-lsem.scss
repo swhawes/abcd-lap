@@ -1,0 +1,82 @@
+$black: #212D2C;
+$sky: #A9FDFF;
+$red: #ff0000;
+  
+.my-color {
+  background-color: $black;
+  color: $sky;
+  padding: .25em;
+}
+
+.my-link a {
+  @extend .my-color;
+  color: $black; 
+
+  &:hover {
+      background-color: rgba( $black, .5 );  
+      color: white;
+  }
+}
+
+#cookbook a {
+  text-decoration-style: wavy;
+}
+
+.lsemPage {
+  display: flex;
+  display: -ms-flexbox;
+}
+
+.lsemPage .lsemNav {
+  margin-top: 20px;
+  min-width: 290px;
+  line-height: 40px;
+  padding-right: 30px;
+}
+
+.lsemPage .lsemNav a {
+  display: block;
+  padding: 0 10px;
+}
+
+.lsemPage .lsemNav a:hover {
+  text-decoration: none;
+  background-color: #f8f8f8;
+}
+
+.lsemPage .lsemNav a.current {
+  background-color: #75aadb;
+  color: #fff;
+}
+
+.lsemPage .lsemContent #show-answer h2 {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 7px 20px;
+  background-color: #75aadb;
+  color: #fff;
+
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.lsemPage .lsemContent #show-answer.showing {
+  display: none;
+}
+
+.lsemPage .lsemContent #model-answer {
+  display: none;
+}
+
+.lsemPage .lsemContent #model-answer.showing {
+  display: block;
+}
+
+.lsemPage .lsemContent #continue-to-next-lsem h2 {
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+.lsemPage .continue-link {
+  font-size: 24px;
+}

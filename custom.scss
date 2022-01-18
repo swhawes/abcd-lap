@@ -1,0 +1,82 @@
+$black: #212D2C;
+$sky: #A9FDFF;
+$red: #ff0000;
+  
+.my-color {
+  background-color: $black;
+  color: $sky;
+  padding: .25em;
+}
+
+.my-link a {
+  @extend .my-color;
+  color: $black; 
+
+  &:hover {
+      background-color: rgba( $black, .5 );  
+      color: white;
+  }
+}
+
+#cookbook a {
+  text-decoration-style: wavy;
+}
+
+.tutorialPage {
+  display: flex;
+  display: -ms-flexbox;
+}
+
+.tutorialPage .tutorialNav {
+  margin-top: 20px;
+  min-width: 290px;
+  line-height: 40px;
+  padding-right: 30px;
+}
+
+.tutorialPage .tutorialNav a {
+  display: block;
+  padding: 0 10px;
+}
+
+.tutorialPage .tutorialNav a:hover {
+  text-decoration: none;
+  background-color: #f8f8f8;
+}
+
+.tutorialPage .tutorialNav a.current {
+  background-color: #75aadb;
+  color: #fff;
+}
+
+.tutorialPage .tutorialContent #show-answer h2 {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 7px 20px;
+  background-color: #75aadb;
+  color: #fff;
+
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tutorialPage .tutorialContent #show-answer.showing {
+  display: none;
+}
+
+.tutorialPage .tutorialContent #model-answer {
+  display: none;
+}
+
+.tutorialPage .tutorialContent #model-answer.showing {
+  display: block;
+}
+
+.tutorialPage .tutorialContent #continue-to-next-tutorial h2 {
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+.tutorialPage .continue-link {
+  font-size: 24px;
+}

@@ -1,0 +1,37 @@
+---
+title: "Longitudinal Structural Equation Modeling"
+output:
+  html_document:
+    number_sections: no
+    toc_float: false
+    includes:
+      before_body: [include_tutorial_nav.html]
+      after_body: [include_tutorial_nav_end.html, footer.html]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Main Page for Tutorial 8- Longitudinal Structural Equation Modeling
+
+### Longitudinal Structural Equation Modeling (LSEM) Techniques
+
+Structural equation modeling (SEM) provides a powerful and flexible approach for investigating hypothesized relationships among a set of observed (measured) and unobserved (latent) variables. The SEM framework encompasses a collection of regression (e.g., path analysis) and factor analytic (e.g., confirmatory factor analysis) techniques and leverages a system of mathematical equations and flexible statistical algorithms to represent, estimate, and test a network of structural relations between variables. As such, SEM requires specification of a model (often visualized using a diagram) that is (presumably) based on theory and research. Typically of most interest to researchers is 1) the degree to which the data (mis)fits or reproduces the pattern of correlations/covariances specified in their hypothesized model, and 2) the amount of variance explained by this model (@Kline1998). A wide variety of statistical indices of model fit are available for evaluating how well the implied model reproduces the sample means, variances, and covariances (e.g., chi-square, cfi, rmsea, etc...). These fit indices also allow the researcher to compare competing models to determine which is more consistent with the data. A particular advantage of the SEM framework is that all of these associations are estimated and tested simultaneously in a single statistical model. The errors from this model are based on all of the information from the overall model and are more precise than the error that results when calculating each part of the model separately. The flexibility of SEM allows this approach to be easily extended for the analysis of repeated measures data. There are a variety of longitudinal structural equation models (LSEM) available ranging from basic autoregressive models to complex multivariate latent curve models spanning multiple time periods. We discuss some of these approaches, below.
+
+<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Tooltip on left" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
+
+<button type="button" class="btn btn-sm btn-danger" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
+
+
+
+xxxxxConceptually, the goal of structural equation modeling (SEM) is to test whether a theoretically motivated model of the covariance among variables provides a good approximation of the data.
+
+xxxxxxMore specifically, we are trying to test how well a parsimonious model (composed of measurement and/or structural components) reproduces the observed covariance matrix. Formally, we are seeking to develop a model whose model-implied covariance matrix approaches the sample (observed) covariance matrix.
+
+> Latent Variables
+> Measurement Model vs Structural Model
+
+***
+## [Continue to Autoregressive and Cross-lagged Panel Analysis (ARCL)](lsem-1.html){.continue-link}

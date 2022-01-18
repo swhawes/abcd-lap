@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
+
+$enable-cssgrid: true html {
+  font-size: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0px;
+  padding-top: 100px;
+  min-height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+nav {
+  padding: 10px;
+
+  @media (min-width: 600px) {
+    padding: 20px;
+  }
+}
+
+$linkPink: rgb(216, 29, 216);
+$linkPurple: rgb(98, 16, 250);
+
+a {
+  position: relative;
+  text-decoration: none;
+}
+
+a::before {
+  content: "";
+  position: absolute;
+  height: 3px;
+  right: 0px;
+  bottom: -3px;
+  left: 0px;
+  background-color: $linkPink;
+}
