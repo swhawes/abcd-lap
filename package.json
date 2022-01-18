@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "postcss tailwind.css -o ./layouts/css/styles.css --watch --verbose"
+    "dev": "postcss tailwind.css -o ./styles/css/styles.css --watch --verbose"
   },
   "keywords": [],
   "author": "",
