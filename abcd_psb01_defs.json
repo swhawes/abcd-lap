@@ -1,0 +1,102 @@
+[
+  {
+    "ElementName": "subjectkey",
+    "DataType": "GUID",
+    "Size": "",
+    "Required": "Required",
+    "ElementDescription": "The NDAR Global Unique Identifier (GUID) for research subject",
+    "ValueRange": "NDAR*",
+    "Notes": "",
+    "Aliases": ""
+  },
+  {
+    "ElementName": "src_subject_id",
+    "DataType": "String",
+    "Size": 20,
+    "Required": "Required",
+    "ElementDescription": "Subject ID how it's defined in lab/project",
+    "ValueRange": "",
+    "Notes": "",
+    "Aliases": ""
+  },
+  {
+    "ElementName": "interview_date",
+    "DataType": "Date",
+    "Size": "",
+    "Required": "Required",
+    "ElementDescription": "Date on which the interview/genetic test/sampling/imaging/biospecimen was completed. MM/DD/YYYY",
+    "ValueRange": "",
+    "Notes": "",
+    "Aliases": ""
+  },
+  {
+    "ElementName": "interview_age",
+    "DataType": "Integer",
+    "Size": "",
+    "Required": "Required",
+    "ElementDescription": "Age in months at the time of the interview/test/sampling/imaging.",
+    "ValueRange": "0 :: 1260",
+    "Notes": "Age is rounded to chronological month. If the research participant is 15-days-old at time of interview, the appropriate value would be 0 months. If the participant is 16-days-old, the value would be 1 month.",
+    "Aliases": ""
+  },
+  {
+    "ElementName": "sex",
+    "DataType": "String",
+    "Size": 20,
+    "Required": "Required",
+    "ElementDescription": "Sex of subject at birth",
+    "ValueRange": "M;F; O; NR",
+    "Notes": "M = Male; F = Female; O=Other; NR = Not reported",
+    "Aliases": "gender"
+  },
+  {
+    "ElementName": "eventname",
+    "DataType": "String",
+    "Size": 60,
+    "Required": "Required",
+    "ElementDescription": "The event name for which the data was collected",
+    "ValueRange": "",
+    "Notes": "",
+    "Aliases": ""
+  },
+  {
+    "ElementName": "prosocial_q1_y",
+    "DataType": "Integer",
+    "Size": "",
+    "Required": "Recommended",
+    "ElementDescription": "I try to be nice to other people. I care about their feelings.",
+    "ValueRange": "0 ; 1 ; 2",
+    "Notes": "0 = Not True; 1 = Somewhat True; 2 = Certainly True",
+    "Aliases": "prosocial_q1"
+  },
+  {
+    "ElementName": "prosocial_q2_y",
+    "DataType": "Integer",
+    "Size": "",
+    "Required": "Recommended",
+    "ElementDescription": "I am helpful if someone is hurt, upset, or feeling sick.",
+    "ValueRange": "0 ; 1 ; 2",
+    "Notes": "0 = Not True; 1 = Somewhat True; 2 = Certainly True",
+    "Aliases": "prosocial_q2"
+  },
+  {
+    "ElementName": "prosocial_q3_y",
+    "DataType": "Integer",
+    "Size": "",
+    "Required": "Recommended",
+    "ElementDescription": "I often offer to help others (parents, teachers, children).",
+    "ValueRange": "0 ; 1 ; 2",
+    "Notes": "0 = Not True; 1 = Somewhat True; 2 = Certainly True",
+    "Aliases": "prosocial_q3"
+  },
+  {
+    "ElementName": "prosocial_admin",
+    "DataType": "Integer",
+    "Size": "",
+    "Required": "Recommended",
+    "ElementDescription": "Please indicate how instrument was administered:",
+    "ValueRange": "1::3",
+    "Notes": "1=RA-Administered ; 2=Youth Self-Administered ; 3=Combination [event_name_number] > '21'",
+    "Aliases": ""
+  }
+]
